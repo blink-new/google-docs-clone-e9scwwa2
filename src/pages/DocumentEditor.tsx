@@ -29,10 +29,10 @@ interface DocumentData {
   id: string
   title: string
   content: string
-  createdAt: string
-  updatedAt: string
-  userId: string
-  isStarred: boolean
+  created_at: string
+  updated_at: string
+  user_id: string
+  is_starred: boolean
 }
 
 export default function DocumentEditor() {
@@ -51,7 +51,7 @@ export default function DocumentEditor() {
     const loadDocument = async (userId: string) => {
       try {
         const doc = await blink.db.documents.list({
-          where: { id, userId }
+          where: { id, user_id: userId }
         })
         if (doc.length > 0) {
           const documentData = doc[0]
@@ -87,7 +87,7 @@ export default function DocumentEditor() {
       await blink.db.documents.update(documentData.id, {
         title,
         content,
-        updatedAt: new Date().toISOString()
+        updated_at: new Date().toISOString()
       })
     } catch (error) {
       console.error('Failed to save document:', error)
@@ -125,9 +125,9 @@ export default function DocumentEditor() {
   const toggleStar = async () => {
     if (!documentData) return
     try {
-      const newStarred = !documentData.isStarred
-      await blink.db.documents.update(documentData.id, { isStarred: newStarred })
-      setDocumentData({ ...documentData, isStarred: newStarred })
+      const newStarred = !documentData.is_starred
+      await blink.db.documents.update(documentData.id, { is_starred: newStarred })
+      setDocumentData({ ...documentData, is_starred: newStarred })
     } catch (error) {
       console.error('Failed to toggle star:', error)
     }
@@ -183,7 +183,7 @@ export default function DocumentEditor() {
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" onClick={toggleStar}>
               <Star 
-                className={`w-4 h-4 ${documentData.isStarred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} 
+                className={`w-4 h-4 ${documentData.is_starred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} 
               />
             </Button>
             <Button className="bg-blue-600 hover:bg-blue-700">

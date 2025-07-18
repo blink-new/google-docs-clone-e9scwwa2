@@ -17,10 +17,10 @@ interface Document {
   id: string
   title: string
   content: string
-  createdAt: string
-  updatedAt: string
-  userId: string
-  isStarred: boolean
+  created_at: string
+  updated_at: string
+  user_id: string
+  is_starred: boolean
 }
 
 export default function DocumentList() {
@@ -34,8 +34,8 @@ export default function DocumentList() {
     const loadDocuments = async (userId: string) => {
       try {
         const docs = await blink.db.documents.list({
-          where: { userId },
-          orderBy: { updatedAt: 'desc' }
+          where: { user_id: userId },
+          orderBy: { updated_at: 'desc' }
         })
         setDocuments(docs)
       } catch (error) {
@@ -58,10 +58,10 @@ export default function DocumentList() {
       const newDoc = await blink.db.documents.create({
         title: 'Untitled document',
         content: '',
-        userId: user?.id,
-        isStarred: false,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        user_id: user?.id,
+        is_starred: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       })
       navigate(`/document/${newDoc.id}`)
     } catch (error) {
@@ -71,10 +71,10 @@ export default function DocumentList() {
 
   const toggleStar = async (docId: string, currentStarred: boolean) => {
     try {
-      await blink.db.documents.update(docId, { isStarred: !currentStarred })
+      await blink.db.documents.update(docId, { is_starred: !currentStarred })
       setDocuments(docs => 
         docs.map(doc => 
-          doc.id === docId ? { ...doc, isStarred: !currentStarred } : doc
+          doc.id === docId ? { ...doc, is_starred: !currentStarred } : doc
         )
       )
     } catch (error) {
@@ -96,7 +96,7 @@ export default function DocumentList() {
   )
 
   const recentDocuments = filteredDocuments.slice(0, 6)
-  const starredDocuments = filteredDocuments.filter(doc => doc.isStarred)
+  const starredDocuments = filteredDocuments.filter(doc => doc.is_starred)
 
   if (loading) {
     return (
@@ -167,7 +167,7 @@ export default function DocumentList() {
                       <div>
                         <h3 className="font-medium text-gray-900">{doc.title}</h3>
                         <p className="text-sm text-gray-500">
-                          Opened {new Date(doc.updatedAt).toLocaleDateString()}
+                          Opened {new Date(doc.updated_at).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -177,11 +177,11 @@ export default function DocumentList() {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation()
-                          toggleStar(doc.id, doc.isStarred)
+                          toggleStar(doc.id, doc.is_starred)
                         }}
                       >
                         <Star 
-                          className={`w-4 h-4 ${doc.isStarred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} 
+                          className={`w-4 h-4 ${doc.is_starred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} 
                         />
                       </Button>
                       <DropdownMenu>
@@ -221,7 +221,7 @@ export default function DocumentList() {
                       <div>
                         <h3 className="font-medium text-gray-900">{doc.title}</h3>
                         <p className="text-sm text-gray-500">
-                          Opened {new Date(doc.updatedAt).toLocaleDateString()}
+                          Opened {new Date(doc.updated_at).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -231,7 +231,7 @@ export default function DocumentList() {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation()
-                          toggleStar(doc.id, doc.isStarred)
+                          toggleStar(doc.id, doc.is_starred)
                         }}
                       >
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
